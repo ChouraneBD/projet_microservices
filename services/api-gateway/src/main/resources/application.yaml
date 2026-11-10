@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+#          routes:
+#            - id: customer-service
+#
+#              uri: lb://CUSTOMER-SERVICE
+#
+#              predicates:
+#                - Path=/api/customers/**
+#              filters:
+#                - AddResponseHeader=X-Served-By, api-gateway
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
