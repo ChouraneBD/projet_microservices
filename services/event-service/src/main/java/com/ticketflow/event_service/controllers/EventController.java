@@ -1,16 +1,47 @@
 package com.ticketflow.event_service.controllers;
 
 import com.ticketflow.event_service.dto.EventResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ticketflow.event_service.entities.Event;
+import com.ticketflow.event_service.services.EventService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/event")
+@RequestMapping("/api/events")
 public class EventController {
+
+    private final EventService eventService;
+
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
+
+    @PostMapping
+    public Event create(@RequestBody Event event) {
+        return eventService.save(event);
+    }
+
+    @GetMapping
+    public List<EventResponse> getAll() {
+        return eventService.findAll().stream()
+                .map(EventResponse::from)
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/{id}")
-    EventResponse get(@PathVariable Long id) {
-        return EventResponse.from(service.get(id));
+    public EventResponse getById(@PathVariable Long id) {
+        return EventResponse.from(eventService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public Event update(@PathVariable Long id, @RequestBody Event event) {
+        return eventService.update(id, event);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        eventService.delete(id);
     }
 }
